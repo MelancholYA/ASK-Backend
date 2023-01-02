@@ -5,7 +5,7 @@
   "main": "out/server.js",
   "scripts": {
     "start:compile": "tsc --watch",
-    "start:dev": "nodemon out/sever.js",
+    "start:dev": "nodemon out/index.js",
     "start": "concurrently \"npm run start:*\""
   },
   "author": "",
