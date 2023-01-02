@@ -27,15 +27,14 @@ const io = new Server<
 
 connectDB();
 
-app.get("/", (req, res) => {
-  res.send("hi there");
-});
-
-app.use("/users", authRouter);
-
 io.on("connection", (socket) => {
   console.log("a user connected");
 });
+app.get("/api", (req, res) => {
+  res.send("hi there");
+});
+
+app.use("/api/users", authRouter);
 
 app.use(errrorHandler);
 

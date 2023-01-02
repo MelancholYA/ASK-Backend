@@ -15,13 +15,13 @@ const db_1 = require("./config/db");
 require("dotenv").config();
 const io = new socket_io_1.Server(server);
 (0, db_1.connectDB)();
-app.get("/", (req, res) => {
-    res.send("hi there");
-});
-app.use("/users", authRouter_1.authRouter);
 io.on("connection", (socket) => {
     console.log("a user connected");
 });
+app.get("/api", (req, res) => {
+    res.send("hi there");
+});
+app.use("/api/users", authRouter_1.authRouter);
 app.use(errorHandler_1.errrorHandler);
 server.listen(port, () => {
     console.log("listening on port:" + port);
