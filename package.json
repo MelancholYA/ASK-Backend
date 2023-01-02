@@ -6,7 +6,8 @@
   "scripts": {
     "start:compile": "tsc --watch",
     "start:dev": "nodemon out/index.js",
-    "start": "concurrently \"npm run start:*\""
+    "start": "node out/index.js",
+    "ff": "concurrently \"npm run start:*\""
   },
   "author": "",
   "license": "ISC",
