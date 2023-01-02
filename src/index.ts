@@ -1,5 +1,5 @@
-import { config } from "dotenv";
 import express from "express";
+import bodyParser from "body-parser";
 import { Server } from "socket.io";
 import http from "http";
 
@@ -26,6 +26,9 @@ const io = new Server<
 >(server);
 
 connectDB();
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 io.on("connection", (socket) => {
   console.log("a user connected");
