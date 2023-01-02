@@ -27,13 +27,13 @@ const io = new Server<
 
 connectDB();
 
-app.get("/api", (req: any, res: any) => {
+app.get("/", (req, res) => {
   res.send("hi there");
 });
 
-app.use("/api/users", authRouter);
+app.use("/users", authRouter);
 
-io.on("connection", (socket: any) => {
+io.on("connection", (socket) => {
   console.log("a user connected");
 });
 
