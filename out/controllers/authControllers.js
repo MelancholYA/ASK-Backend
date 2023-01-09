@@ -34,7 +34,12 @@ const logIn = (0, express_async_handler_1.default)((req, res) => __awaiter(void 
         throw new Error("Wrong password");
     }
     const token = (0, helpers_1.signToken)({ id: user._id, email: user.email });
-    res.status(200).json({ token });
+    const userData = {
+        name: user.firstName + " " + user.lastName,
+        email: user.email,
+        avatar: user.avatar,
+    };
+    res.status(200).json({ token, user: userData });
 }));
 exports.logIn = logIn;
 const register = (0, express_async_handler_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -61,7 +66,12 @@ const register = (0, express_async_handler_1.default)((req, res) => __awaiter(vo
             email: user.email,
         });
         yield user.save();
-        res.status(200).json({ token: jwt });
+        const userData = {
+            name: user.firstName + " " + user.lastName,
+            email: user.email,
+            avatar: user.avatar,
+        };
+        res.status(200).json({ token: jwt, user: userData });
     }))
         .catch((error) => {
         throw new Error(error);

@@ -23,7 +23,12 @@ const logIn = asyncHnadler(
       throw new Error("Wrong password");
     }
     const token: string = signToken({ id: user._id, email: user.email });
-    res.status(200).json({ token });
+    const userData = {
+      name: user.firstName + " " + user.lastName,
+      email: user.email,
+      avatar: user.avatar,
+    };
+    res.status(200).json({ token, user: userData });
   }
 );
 
@@ -63,7 +68,12 @@ const register = asyncHnadler(
           email: user.email,
         });
         await user.save();
-        res.status(200).json({ token: jwt });
+        const userData = {
+          name: user.firstName + " " + user.lastName,
+          email: user.email,
+          avatar: user.avatar,
+        };
+        res.status(200).json({ token: jwt, user: userData });
       })
       .catch((error) => {
         throw new Error(error);
