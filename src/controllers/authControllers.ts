@@ -24,6 +24,7 @@ const logIn = asyncHnadler(
     }
     const token: string = signToken({ id: user._id, email: user.email });
     const userData = {
+      id: user.id,
       name: user.firstName + " " + user.lastName,
       email: user.email,
       avatar: user.avatar,
@@ -69,6 +70,7 @@ const register = asyncHnadler(
         });
         await user.save();
         const userData = {
+          id: user.id,
           name: user.firstName + " " + user.lastName,
           email: user.email,
           avatar: user.avatar,
