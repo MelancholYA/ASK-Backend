@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import express from "express";
 import bodyParser from "body-parser";
 import { Server } from "socket.io";
@@ -16,7 +17,21 @@ import {
 import { authRouter } from "./routes/authRouter";
 import { errrorHandler } from "./middlwares/errorHandler";
 import { connectDB } from "./config/db";
+import { JwtPayload } from "jsonwebtoken";
+import { postRouter } from "./routes/postRouter";
 require("dotenv").config();
+
+declare module "express-serve-static-core" {
+  interface Request {
+    user: JwtPayload;
+  }
+}
+declare module "jsonwebtoken" {
+  interface JwtPayload {
+    _id: mongoose.Types.ObjectId;
+    email: string;
+  }
+}
 
 const io = new Server<
   ClientToServerEvents,
@@ -38,6 +53,7 @@ app.get("/api", (req, res) => {
 });
 
 app.use("/api/users", authRouter);
+app.use("/api/posts", postRouter);
 
 app.use(errrorHandler);
 

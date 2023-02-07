@@ -33,8 +33,9 @@ const logIn = (0, express_async_handler_1.default)((req, res) => __awaiter(void 
         res.status(400);
         throw new Error("Wrong password");
     }
-    const token = (0, helpers_1.signToken)({ id: user._id, email: user.email });
+    const token = (0, helpers_1.signToken)({ _id: user._id, email: user.email });
     const userData = {
+        _id: user._id,
         name: user.firstName + " " + user.lastName,
         email: user.email,
         avatar: user.avatar,
@@ -62,11 +63,12 @@ const register = (0, express_async_handler_1.default)((req, res) => __awaiter(vo
     })
         .then((user) => __awaiter(void 0, void 0, void 0, function* () {
         const jwt = (0, helpers_1.signToken)({
-            id: user._id,
+            _id: user._id,
             email: user.email,
         });
         yield user.save();
         const userData = {
+            _id: user._id,
             name: user.firstName + " " + user.lastName,
             email: user.email,
             avatar: user.avatar,

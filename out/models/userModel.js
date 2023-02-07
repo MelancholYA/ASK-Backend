@@ -8,6 +8,7 @@ const userSchema = new mongoose_1.Schema({
     email: { type: String, required: true },
     password: { type: String, required: true },
     avatar: String,
+    cover: String,
 });
 const User = (0, mongoose_1.model)("User", userSchema);
 exports.User = User;

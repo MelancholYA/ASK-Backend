@@ -7,7 +7,7 @@ const encryptPass = async (pass: string): Promise<string> => {
   const hashed = await bcrpt.hash(pass, salt);
   return hashed;
 };
-const signToken = (payload: { id: Types.ObjectId; email: string }) => {
+const signToken = (payload: { _id: Types.ObjectId; email: string }) => {
   const secret = process.env.JWT_SECRET || "";
   return JWT.sign(payload, secret);
 };
