@@ -117,11 +117,24 @@ const commentPost = (0, express_async_handler_1.default)((req, res) => __awaiter
 }));
 exports.commentPost = commentPost;
 const getPostComments = (0, express_async_handler_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { postId } = req.params;
+    const pageSize = 10;
+    const { currentPage, postId } = req.params;
+    const startIndex = (parseInt(currentPage) - 1) * pageSize;
+    const totalDocuments = yield answerModel_1.Answer.countDocuments({ post: postId });
+    const totalPages = Math.ceil(totalDocuments / pageSize);
+    console.log({
+        totalDocuments,
+        totalPages,
+        currentPage,
+        s: parseInt(currentPage) < totalPages,
+    });
     answerModel_1.Answer.find({
         post: postId,
     })
+        .skip(startIndex)
+        .limit(pageSize)
         .select("-replies -__v")
+        .sort({ createdAt: -1 })
         .populate([
         {
             path: "user",
@@ -129,7 +142,11 @@ const getPostComments = (0, express_async_handler_1.default)((req, res) => __awa
         },
     ])
         .then((answers) => {
-        res.status(200).json({ ok: true, answers });
+        res.status(200).json({
+            ok: true,
+            answers,
+            hasNextPage: parseInt(currentPage) < totalPages,
+        });
     })
         .catch((err) => {
         res.status(500);
@@ -137,3 +154,6 @@ const getPostComments = (0, express_async_handler_1.default)((req, res) => __awa
     });
 }));
 exports.getPostComments = getPostComments;
+const replyComment = (0, express_async_handler_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const {} = req.body;
+}));

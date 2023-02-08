@@ -9,4 +9,4 @@ exports.postRouter = postRouter;
 postRouter.get("/:currentPage", authMiddlware_1.protectForUser, postController_1.getPosts);
 postRouter.post("/new", authMiddlware_1.protectForUser, postController_1.createPost);
 postRouter.post("/answer", authMiddlware_1.protectForUser, postController_1.commentPost);
-postRouter.get("/:postId/answers", authMiddlware_1.protectForUser, postController_1.getPostComments);
+postRouter.get("/:postId/answers/:currentPage", authMiddlware_1.protectForUser, postController_1.getPostComments);

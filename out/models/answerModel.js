@@ -31,6 +31,10 @@ const answerSchema = new mongoose_1.Schema({
         required: true,
         ref: "User",
     },
+    repliesLength: {
+        type: Number,
+        default: 0,
+    },
     replies: [
         {
             type: mongoose_1.default.Types.ObjectId,
@@ -44,6 +48,8 @@ const answerSchema = new mongoose_1.Schema({
         required: true,
         ref: "Post",
     },
+}, {
+    timestamps: true,
 });
 const Answer = (0, mongoose_1.model)("Answer", answerSchema);
 exports.Answer = Answer;
