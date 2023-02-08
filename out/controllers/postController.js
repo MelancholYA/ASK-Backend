@@ -12,10 +12,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getPostComments = exports.commentPost = exports.getPosts = exports.createPost = void 0;
+exports.getReplies = exports.replyComment = exports.getPostComments = exports.commentPost = exports.getPosts = exports.createPost = void 0;
 const express_async_handler_1 = __importDefault(require("express-async-handler"));
 const postModel_1 = require("../models/postModel");
 const answerModel_1 = require("../models/answerModel");
+const replyModel_1 = require("../models/replyModel");
 const createPost = (0, express_async_handler_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { body, chip, group } = req.body;
     const { user } = req;
@@ -122,12 +123,6 @@ const getPostComments = (0, express_async_handler_1.default)((req, res) => __awa
     const startIndex = (parseInt(currentPage) - 1) * pageSize;
     const totalDocuments = yield answerModel_1.Answer.countDocuments({ post: postId });
     const totalPages = Math.ceil(totalDocuments / pageSize);
-    console.log({
-        totalDocuments,
-        totalPages,
-        currentPage,
-        s: parseInt(currentPage) < totalPages,
-    });
     answerModel_1.Answer.find({
         post: postId,
     })
@@ -155,5 +150,58 @@ const getPostComments = (0, express_async_handler_1.default)((req, res) => __awa
 }));
 exports.getPostComments = getPostComments;
 const replyComment = (0, express_async_handler_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const {} = req.body;
+    const { postId, answerId } = req.params;
+    const { _id } = req.user;
+    const { body } = req.body;
+    if (!body) {
+        res.status(400);
+        throw new Error("Please fill all the fields");
+    }
+    replyModel_1.Reply.create({
+        user: _id,
+        post: postId,
+        answer: answerId,
+        body,
+    })
+        .then((replyRaw) => __awaiter(void 0, void 0, void 0, function* () {
+        yield answerModel_1.Answer.findByIdAndUpdate(answerId, {
+            $push: { replies: replyRaw._id },
+            $inc: { repliesLength: 1 },
+        });
+        const reply = yield replyRaw.populate([
+            {
+                path: "user",
+                select: "-password -__v -email",
+            },
+        ]);
+        res.status(201).json({ ok: true, reply });
+    }))
+        .catch((err) => {
+        res.status(500);
+        throw new Error(err);
+    });
 }));
+exports.replyComment = replyComment;
+const getReplies = (0, express_async_handler_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { postId, answerId } = req.params;
+    console.log({ postId, fd: answerId });
+    replyModel_1.Reply.find({
+        post: postId,
+        answer: answerId,
+    })
+        .populate([
+        {
+            path: "user",
+            select: "-password -__v -email",
+        },
+    ])
+        .select("-__v -post -answer")
+        .then((replies) => {
+        res.status(200).json({ ok: true, replies });
+    })
+        .catch((err) => {
+        res.status(500);
+        throw new Error(err);
+    });
+}));
+exports.getReplies = getReplies;
