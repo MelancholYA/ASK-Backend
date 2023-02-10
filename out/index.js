@@ -14,6 +14,7 @@ const authRouter_1 = require("./routes/authRouter");
 const errorHandler_1 = require("./middlwares/errorHandler");
 const db_1 = require("./config/db");
 const postRouter_1 = require("./routes/postRouter");
+const groupRouter_1 = require("./routes/groupRouter");
 require("dotenv").config();
 const io = new socket_io_1.Server(server);
 (0, db_1.connectDB)();
@@ -27,6 +28,7 @@ app.get("/api", (req, res) => {
 });
 app.use("/api/users", authRouter_1.authRouter);
 app.use("/api/posts", postRouter_1.postRouter);
+app.use("/api/groups", groupRouter_1.groupRouter);
 app.use(errorHandler_1.errrorHandler);
 server.listen(port, () => {
     console.log("listening on port:" + port);

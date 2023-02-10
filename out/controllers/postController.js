@@ -20,7 +20,6 @@ const replyModel_1 = require("../models/replyModel");
 const createPost = (0, express_async_handler_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { body, chip, group } = req.body;
     const { user } = req;
-    console.log({ body, chip, user });
     if (!body || !chip) {
         res.status(400);
         throw new Error("Please fill all the fields");
@@ -85,7 +84,6 @@ const getPosts = (0, express_async_handler_1.default)((req, res) => __awaiter(vo
 exports.getPosts = getPosts;
 const commentPost = (0, express_async_handler_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { userId, body, postId } = req.body;
-    console.log({ userId, body, postId });
     if (!userId || !body || !postId) {
         res.status(400);
         throw new Error("Please fill all the fields");
@@ -184,7 +182,6 @@ const replyComment = (0, express_async_handler_1.default)((req, res) => __awaite
 exports.replyComment = replyComment;
 const getReplies = (0, express_async_handler_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { postId, answerId } = req.params;
-    console.log({ postId, fd: answerId });
     replyModel_1.Reply.find({
         post: postId,
         answer: answerId,

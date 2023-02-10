@@ -1,3 +1,20 @@
+declare module "express-serve-static-core" {
+  interface Request {
+    user: JwtPayload;
+  }
+}
+declare module "jsonwebtoken" {
+  interface JwtPayload {
+    _id: mongoose.Types.ObjectId;
+    email: string;
+  }
+}
+declare module "express-fileupload" {
+  interface UploadedFile {
+    path: string;
+  }
+}
+
 import mongoose from "mongoose";
 import express from "express";
 import bodyParser from "body-parser";
@@ -19,19 +36,9 @@ import { errrorHandler } from "./middlwares/errorHandler";
 import { connectDB } from "./config/db";
 import { JwtPayload } from "jsonwebtoken";
 import { postRouter } from "./routes/postRouter";
-require("dotenv").config();
+import { groupRouter } from "./routes/groupRouter";
 
-declare module "express-serve-static-core" {
-  interface Request {
-    user: JwtPayload;
-  }
-}
-declare module "jsonwebtoken" {
-  interface JwtPayload {
-    _id: mongoose.Types.ObjectId;
-    email: string;
-  }
-}
+require("dotenv").config();
 
 const io = new Server<
   ClientToServerEvents,
@@ -54,6 +61,7 @@ app.get("/api", (req, res) => {
 
 app.use("/api/users", authRouter);
 app.use("/api/posts", postRouter);
+app.use("/api/groups", groupRouter);
 
 app.use(errrorHandler);
 
