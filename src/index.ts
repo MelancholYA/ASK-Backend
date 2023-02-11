@@ -1,20 +1,3 @@
-declare module "express-serve-static-core" {
-  interface Request {
-    user: JwtPayload;
-  }
-}
-declare module "jsonwebtoken" {
-  interface JwtPayload {
-    _id: mongoose.Types.ObjectId;
-    email: string;
-  }
-}
-declare module "express-fileupload" {
-  interface UploadedFile {
-    path: string;
-  }
-}
-
 import mongoose from "mongoose";
 import express from "express";
 import bodyParser from "body-parser";
@@ -51,6 +34,7 @@ connectDB();
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use("/public", express.static("public"));
 
 io.on("connection", (socket) => {
   console.log("a user connected");
@@ -68,3 +52,19 @@ app.use(errrorHandler);
 server.listen(port, () => {
   console.log("listening on port:" + port);
 });
+declare module "express-serve-static-core" {
+  interface Request {
+    user: JwtPayload;
+  }
+}
+declare module "jsonwebtoken" {
+  interface JwtPayload {
+    _id: mongoose.Types.ObjectId;
+    email: string;
+  }
+}
+declare module "express-fileupload" {
+  interface UploadedFile {
+    path: string;
+  }
+}

@@ -20,6 +20,7 @@ const io = new socket_io_1.Server(server);
 (0, db_1.connectDB)();
 app.use(body_parser_1.default.json());
 app.use(body_parser_1.default.urlencoded({ extended: true }));
+app.use("/public", express_1.default.static("public"));
 io.on("connection", (socket) => {
     console.log("a user connected");
 });

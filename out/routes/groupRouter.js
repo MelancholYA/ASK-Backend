@@ -19,5 +19,7 @@ const storage = multer_1.default.diskStorage({
     },
 });
 const upload = (0, multer_1.default)({ storage });
-groupRouter.get("/", authMiddlware_1.protectForUser, groupController_1.getGroups);
+groupRouter.get("/:currentPage", authMiddlware_1.protectForUser, groupController_1.getGroups);
+groupRouter.post("/:groupId/join", authMiddlware_1.protectForUser, groupController_1.joinGroup);
+groupRouter.post("/:groupId/leave", authMiddlware_1.protectForUser, groupController_1.leaveGroup);
 groupRouter.post("/new", authMiddlware_1.protectForUser, upload.fields([{ name: "cover" }, { name: "avatar" }]), groupController_1.createGroup);
