@@ -38,7 +38,6 @@ const createGroup = (0, express_async_handler_1.default)((req, res) => __awaiter
             ? req.files["avatar"][0]
             : req.files["avatar"];
         if (cover) {
-            //ts-ignore
             groupBody.cover = "/" + cover.path;
         }
         if (avatar) {
@@ -67,6 +66,7 @@ const getGroups = (0, express_async_handler_1.default)((req, res) => __awaiter(v
     groupModel_1.Group.find()
         .skip(startIndex)
         .limit(pageSize)
+        .select("-posts")
         .then((groupsDoc) => {
         const groups = groupsDoc.map((groupDoc) => {
             const group = groupDoc.toObject();
@@ -104,7 +104,9 @@ const joinGroup = (0, express_async_handler_1.default)((req, res) => __awaiter(v
         group.members.push(_id);
         group.membersLength++;
         group.save();
-        res.status(200).json({ ok: true, group });
+        const objGroup = group.toObject();
+        objGroup.joined = true;
+        res.status(200).json({ ok: true, group: objGroup });
     })
         .catch((err) => {
         throw new Error(err);
@@ -119,6 +121,10 @@ const leaveGroup = (0, express_async_handler_1.default)((req, res) => __awaiter(
         $inc: { membersLength: -1 },
     })
         .then((group) => {
+        if (!group) {
+            throw new Error("No group was found");
+        }
+        group.toObject().joined = false;
         res.status(200).json({ ok: true, group });
     })
         .catch((err) => {

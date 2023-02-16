@@ -12,25 +12,22 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getReplies = exports.replyComment = exports.getPostComments = exports.commentPost = exports.getPosts = exports.createPost = void 0;
+exports.getGroupPosts = exports.getReplies = exports.replyComment = exports.getPostComments = exports.commentPost = exports.getPosts = exports.createPost = void 0;
 const express_async_handler_1 = __importDefault(require("express-async-handler"));
 const postModel_1 = require("../models/postModel");
 const answerModel_1 = require("../models/answerModel");
 const replyModel_1 = require("../models/replyModel");
+const groupModel_1 = require("../models/groupModel");
 const createPost = (0, express_async_handler_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { body, chip, group } = req.body;
     const { user } = req;
+    console.log({ body, chip, group, f: req.body });
     if (!body || !chip) {
         res.status(400);
         throw new Error("Please fill all the fields");
     }
-    postModel_1.Post.create({
-        body,
-        chip,
-        user: user._id,
-    })
-        .then((result) => __awaiter(void 0, void 0, void 0, function* () {
-        const post = yield result.populate([
+    try {
+        const post = yield new postModel_1.Post({ body, chip, user: user._id }).populate([
             {
                 path: "user",
                 select: "-password",
@@ -40,12 +37,43 @@ const createPost = (0, express_async_handler_1.default)((req, res) => __awaiter(
                 select: "_id name",
             },
         ]);
+        if (group) {
+            let groupId = group;
+            post.group = groupId;
+            yield groupModel_1.Group.findByIdAndUpdate(groupId, {
+                $inc: { postsLength: 1 },
+                $push: { posts: post._id },
+            });
+        }
+        post.save();
         res.status(201).json({ ok: true, post });
-    }))
-        .catch((err) => {
+    }
+    catch (error) {
         res.status(500);
-        throw new Error(err);
-    });
+        throw new Error(error);
+    }
+    // Post.create({
+    //   body,
+    //   chip,
+    //   user: user._id,
+    // })
+    //   .then(async (result) => {
+    //     const post = await result.populate([
+    //       {
+    //         path: "user",
+    //         select: "-password",
+    //       },
+    //       {
+    //         path: "group",
+    //         select: "_id name",
+    //       },
+    //     ]);
+    //     res.status(201).json({ ok: true, post });
+    //   })
+    //   .catch((err) => {
+    //     res.status(500);
+    //     throw new Error(err);
+    //   });
 }));
 exports.createPost = createPost;
 const getPosts = (0, express_async_handler_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -82,6 +110,41 @@ const getPosts = (0, express_async_handler_1.default)((req, res) => __awaiter(vo
     });
 }));
 exports.getPosts = getPosts;
+const getGroupPosts = (0, express_async_handler_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { groupID, currentPage } = req.params;
+    const pageSize = 10;
+    const startIndex = (parseInt(currentPage) - 1) * pageSize;
+    const totalDocuments = yield postModel_1.Post.countDocuments();
+    const totalPages = Math.ceil(totalDocuments / pageSize);
+    try {
+        const groupPosts = yield postModel_1.Post.find({ group: groupID })
+            .skip(startIndex)
+            .limit(pageSize)
+            .populate([
+            {
+                path: "user",
+                select: "-password",
+            },
+            {
+                path: "group",
+                select: "_id name",
+            },
+        ])
+            .sort({ createdAt: -1 })
+            .select("-answers -createdAt -updatedAt -__v");
+        console.log({ groupPosts });
+        res.json({
+            ok: true,
+            posts: groupPosts,
+            hasNextPage: parseInt(currentPage) < totalPages,
+        });
+    }
+    catch (error) {
+        res.status(500);
+        throw new Error(error);
+    }
+}));
+exports.getGroupPosts = getGroupPosts;
 const commentPost = (0, express_async_handler_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { userId, body, postId } = req.body;
     if (!userId || !body || !postId) {

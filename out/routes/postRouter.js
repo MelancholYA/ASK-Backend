@@ -9,6 +9,7 @@ exports.postRouter = postRouter;
 postRouter.get("/:currentPage", authMiddlware_1.protectForUser, postController_1.getPosts);
 postRouter.post("/new", authMiddlware_1.protectForUser, postController_1.createPost);
 postRouter.post("/answer", authMiddlware_1.protectForUser, postController_1.commentPost);
+postRouter.get("/:groupID/:currentPage", authMiddlware_1.protectForUser, postController_1.getGroupPosts);
 postRouter
     .route("/:postId/:answerId/replies")
     .get(authMiddlware_1.protectForUser, postController_1.getReplies)
