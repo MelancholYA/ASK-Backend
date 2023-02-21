@@ -33,7 +33,11 @@ const io = new Server<
 
 connectDB();
 
-app.use(cors());
+app.use(
+  cors({
+    origin: "http://localhost:5173/",
+  })
+);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use("/public", express.static("public"));

@@ -19,7 +19,9 @@ const groupRouter_1 = require("./routes/groupRouter");
 require("dotenv").config();
 const io = new socket_io_1.Server(server);
 (0, db_1.connectDB)();
-app.use((0, cors_1.default)());
+app.use((0, cors_1.default)({
+    origin: "http://localhost:5173/",
+}));
 app.use(body_parser_1.default.json());
 app.use(body_parser_1.default.urlencoded({ extended: true }));
 app.use("/public", express_1.default.static("public"));
