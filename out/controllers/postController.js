@@ -98,6 +98,7 @@ const getPosts = (0, express_async_handler_1.default)((req, res) => __awaiter(vo
         .sort({ createdAt: -1 })
         .select("-answers -createdAt -updatedAt -__v")
         .then((posts) => {
+        console.log(posts);
         res.json({
             ok: true,
             posts,

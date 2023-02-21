@@ -104,6 +104,7 @@ const getPosts = asyncHnadler(
       .sort({ createdAt: -1 })
       .select("-answers -createdAt -updatedAt -__v")
       .then((posts) => {
+        console.log(posts)
         res.json({
           ok: true,
           posts,

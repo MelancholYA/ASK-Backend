@@ -9,6 +9,7 @@ const protectForUser: Imiddlware = (req, res, next) => {
     res.status(400);
     throw new Error("Unauthorized : no token provided");
   }
+  
   if (Array.isArray(token)) {
     res.status(400);
     throw new Error("Unauthorized : malformed token");

@@ -18,6 +18,13 @@ const groupRouter_1 = require("./routes/groupRouter");
 require("dotenv").config();
 const io = new socket_io_1.Server(server);
 (0, db_1.connectDB)();
+app.use((req, res, next) => {
+    // Set headers to allow cross-origin requests
+    res.setHeader("Access-Control-Allow-Origin", "*");
+    res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
+    res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+    next();
+});
 app.use(body_parser_1.default.json());
 app.use(body_parser_1.default.urlencoded({ extended: true }));
 app.use("/public", express_1.default.static("public"));
