@@ -26,9 +26,6 @@ app.use("/public", express_1.default.static("public"));
 io.on("connection", (socket) => {
     console.log("a user connected");
 });
-app.get("/api", (req, res) => {
-    res.send("hi there");
-});
 app.use("/api/users", authRouter_1.authRouter);
 app.use("/api/posts", postRouter_1.postRouter);
 app.use("/api/groups", groupRouter_1.groupRouter);
