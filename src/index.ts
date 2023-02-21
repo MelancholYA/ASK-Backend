@@ -34,16 +34,12 @@ const io = new Server<
 connectDB();
 
 app.use(cors());
-
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use("/public", express.static("public"));
 
 io.on("connection", (socket) => {
   console.log("a user connected");
-});
-app.get("/api", (req, res) => {
-  res.send("hi there");
 });
 
 app.use("/api/users", authRouter);
