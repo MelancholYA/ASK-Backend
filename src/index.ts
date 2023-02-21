@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import express from "express";
 import bodyParser from "body-parser";
+import cors from "cors";
 import { Server } from "socket.io";
 import http from "http";
 
@@ -32,14 +33,7 @@ const io = new Server<
 
 connectDB();
 
-app.use((req, res, next) => {
-  // Set headers to allow cross-origin requests
-
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
-  next();
-});
+app.use(cors());
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
